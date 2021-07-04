@@ -2,32 +2,35 @@
 var defaultentries = [
 	{
 	"menu":"dictionary.com",
-	"active":1
+	"active":0
 	},{
 	"menu":"merriam-webster.com-dict",
-	"active":1
+	"active":0
 	},{
 	"menu":"merriam-webster.com-thes",
-	"active":1
+	"active":0
 	},{
 	"menu":"thefreedictionary.com",
-	"active":1
+	"active":0
 	},{
 	"menu":"thesaurus.com",
-	"active":1
+	"active":0
 	},{
 	"menu":"urbandictionary.com",
-	"active":1
+	"active":0
 	},{
 	"menu":"wikipedia.org",
+	"active":0
+	},{
+	"menu":"rhymit",
 	"active":1
 	},{
-	"menu":"wiktionary.org",
+	"menu":"Priberiam",
 	"active":1
 	},{
-	"menu":"yourdictionary.com",
+	"menu":"azRhymes",
 	"active":1
-	},
+	}
 ];
 var entries = {};
 if (!localStorage.getItem("entries")) {
@@ -50,7 +53,6 @@ function isActive(menu){
 	}
 }
 function setActive(menu){
-	console.log("setActive");
 	var elen = entries.length;
 	console.log(menu);
 	console.assert(!elen == 0);
@@ -74,7 +76,7 @@ function setInactive(menu){
 	localStorage.setItem("entries", JSON.stringify(entries));
 }
 /* Create the context menu */
-var tm = chrome.contextMenus.create({"title": "Look-it-up", "contexts":["selection"]});
+var tm = chrome.contextMenus.create({ "title": "Dicionário", "contexts": ["selection"] });
 if(isActive("dictionary.com")){
 	chrome.contextMenus.create({"title": "dictionary.com", "contexts":["selection"], "parentId": tm, "onclick": lookItUp1});
 }
@@ -124,17 +126,28 @@ function lookItUp7(i, t){
 	var createProperties = {url: "http://en.wikipedia.org/wiki/" + encodeURIComponent(i.selectionText)};
 	chrome.tabs.create(createProperties);
 }
-if(isActive("wiktionary.org")){
-	chrome.contextMenus.create({"title": "wiktionary.org", "contexts":["selection"], "parentId": tm, "onclick": lookItUp8});
+//------------------CUSTOM-------------------//
+// Rhymit
+if(isActive("rhymit")){
+	chrome.contextMenus.create({"title": "rhymit", "contexts":["selection"], "parentId": tm, "onclick": searchInRhymit});
 }
-function lookItUp8(i, t){
-	var createProperties = {url: "http://en.wiktionary.org/wiki/" + encodeURIComponent(i.selectionText)};
+function searchInRhymit(i, t){
+	var createProperties = {url: "https://www.rhymit.com/pt/palavras-que-rimam-com-" + encodeURIComponent(i.selectionText)};
 	chrome.tabs.create(createProperties);
 }
-if(isActive("yourdictionary.com")){
-	chrome.contextMenus.create({"title": "yourdictionary.com", "contexts":["selection"], "parentId": tm, "onclick": lookItUp9});
+// Priberiam PT
+if(isActive("Priberiam")){
+	chrome.contextMenus.create({"title": "Priberiam", "contexts":["selection"], "parentId": tm, "onclick": searshInPriberiam});
 }
-function lookItUp9(i, t){
-	var createProperties = {url: "http://www.yourdictionary.com/" + encodeURIComponent(i.selectionText)};
+function searshInPriberiam(i, t){
+	var createProperties = {url: "https://dicionario.priberam.org/" + encodeURIComponent(i.selectionText)};
+	chrome.tabs.create(createProperties);
+}
+// Az Rhymes PT
+if(isActive("azRhymes")){
+	chrome.contextMenus.create({"title": "pt.azrhymes.com", "contexts":["selection"], "parentId": tm, "onclick": searchInAzRhymes});
+}
+function searchInAzRhymes(i, t){
+	var createProperties = {url: "https://pt.azrhymes.com/?rimas=" + encodeURIComponent(i.selectionText)};
 	chrome.tabs.create(createProperties);
 }
